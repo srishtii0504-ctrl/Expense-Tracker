@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Expense - Student Expense Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="brand-logo">
+                <span class="brand-icon">₹</span>
+                <span>Student Expense Tracker</span>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('index') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('add_expense') }}">+ Add Expense</a></li>
+                    <li><a href="{{ url_for('budget') }}">Monthly Budget</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Flash Messages for Errors / Alerts -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert-container" style="max-width: 550px; margin: 0 auto 1.5rem auto;">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Edit Expense Form Card -->
+        <section class="form-card">
+            <div class="page-title" style="margin-bottom: 1.5rem; text-align: center;">
+                <h1>Edit Expense Record</h1>
+                <p>Modify transaction details for: <strong>{{ expense['title'] }}</strong></p>
+            </div>
+
+            <form action="{{ url_for('edit_expense', id=expense['id']) }}" method="POST">
+                <!-- Field 1: Expense Title -->
+                <div class="form-group">
+                    <label for="title">Expense Name / Title *</label>
+                    <input 
+                        type="text" 
+                        id="title" 
+                        name="title" 
+                        class="form-control" 
+                        value="{{ expense['title'] }}" 
+                        required 
+                        autofocus
+                    >
+                    <div class="form-help">Update the name or description of this expenditure.</div>
+                </div>
+
+                <!-- Field 2: Amount in INR -->
+                <div class="form-group">
+                    <label for="amount">Amount in Indian Rupees (₹) *</label>
+                    <input 
+                        type="number" 
+                        id="amount" 
+                        name="amount" 
+                        class="form-control" 
+                        value="{{ "%.2f"|format(expense['amount']) }}" 
+                        step="0.01" 
+                        min="0.01" 
+                        required
+                    >
+                    <div class="form-help">Enter the updated amount in ₹. Must be greater than 0.</div>
+                </div>
+
+                <!-- Field 3: Category Selection -->
+                <div class="form-group">
+                    <label for="category">Category *</label>
+                    <select id="category" name="category" class="form-control" required>
+                        {% for cat in categories %}
+                            <option value="{{ cat }}" {% if expense['category'] == cat %}selected{% endif %}>
+                                {{ cat }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-help">Select the appropriate category.</div>
+                </div>
+
+                <!-- Field 4: Expense Date -->
+                <div class="form-group">
+                    <label for="date">Date of Expense *</label>
+                    <input 
+                        type="date" 
+                        id="date" 
+                        name="date" 
+                        class="form-control" 
+                        value="{{ expense['date'] }}" 
+                        required
+                    >
+                    <div class="form-help">Adjust the transaction date if needed.</div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <a href="{{ url_for('index') }}" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Update Expense</button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Student Expense Tracker and Budget Management System | BTech IT Minor Project</p>
+    </footer>
+
+</body>
+</html>

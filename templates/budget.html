@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Budget - Student Expense Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="brand-logo">
+                <span class="brand-icon">₹</span>
+                <span>Student Expense Tracker</span>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('index') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('add_expense') }}">+ Add Expense</a></li>
+                    <li><a href="{{ url_for('budget') }}" class="active">Monthly Budget</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Flash Messages for Success/Error Notifications -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert-container">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Over-Budget Alert Banner -->
+        {% if is_budget_exceeded %}
+            <div class="warning-banner">
+                <div>
+                    <strong>⚠️ Budget Exceeded Warning:</strong> You have spent <strong>₹{{ "%.2f"|format(monthly_spent) }}</strong>, which exceeds your planned limit of <strong>₹{{ "%.2f"|format(monthly_budget) }}</strong> by <span style="text-decoration: underline;">₹{{ "%.2f"|format(monthly_spent - monthly_budget) }}</span> for {{ current_month_name }}.
+                </div>
+            </div>
+        {% elif monthly_budget > 0 %}
+            <div class="alert alert-success" style="margin-bottom: 1.75rem;">
+                <span>✅ <strong>Good Job!</strong> You are within your monthly budget. You have <strong>₹{{ "%.2f"|format(remaining_budget) }}</strong> left for {{ current_month_name }}.</span>
+            </div>
+        {% endif %}
+
+        <!-- Page Header -->
+        <section class="page-header">
+            <div class="page-title">
+                <h1>Monthly Budget Management</h1>
+                <p>Set a spending limit for <strong>{{ current_month_name }}</strong> and track financial health.</p>
+            </div>
+            <div>
+                <a href="{{ url_for('index') }}" class="btn btn-outline">&larr; Back to Dashboard</a>
+            </div>
+        </section>
+
+        <!-- Budget Stats Overview -->
+        <section class="stats-grid">
+            <!-- Card 1: Monthly Budget -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Allocated Budget</span>
+                    <span class="stat-badge badge-info">{{ current_month_name }}</span>
+                </div>
+                <div class="stat-value">₹{{ "%.2f"|format(monthly_budget) }}</div>
+                <div class="stat-subtext">Target spending cap for this month</div>
+            </div>
+
+            <!-- Card 2: Spent This Month -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Total Spent</span>
+                    <span class="stat-badge badge-info">This Month</span>
+                </div>
+                <div class="stat-value">₹{{ "%.2f"|format(monthly_spent) }}</div>
+                <div class="stat-subtext">Sum of expenses recorded in this month</div>
+            </div>
+
+            <!-- Card 3: Remaining Budget -->
+            <div class="stat-card {% if is_budget_exceeded %}danger{% endif %}">
+                <div class="stat-header">
+                    <span class="stat-label">Remaining Balance</span>
+                    {% if is_budget_exceeded %}
+                        <span class="stat-badge badge-danger">Deficit</span>
+                    {% else %}
+                        <span class="stat-badge badge-success">Surplus</span>
+                    {% endif %}
+                </div>
+                <div class="stat-value">₹{{ "%.2f"|format(remaining_budget) }}</div>
+                <div class="stat-subtext">
+                    {% if is_budget_exceeded %}
+                        Overspent by ₹{{ "%.2f"|format(monthly_spent - monthly_budget) }}
+                    {% else %}
+                        Available funds for the rest of the month
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Budget Progress Bar Card -->
+        {% if monthly_budget > 0 %}
+            <section class="card-table-wrapper" style="padding: 1.5rem; margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <span style="font-weight: 600; font-size: 0.95rem;">Budget Utilization</span>
+                    <span style="font-weight: 700; color: {% if is_budget_exceeded %}var(--danger-red){% else %}var(--primary-blue){% endif %}; font-size: 0.95rem;">
+                        {{ percentage_spent }}% Used
+                    </span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar {% if is_budget_exceeded %}danger{% endif %}" style="width: {{ percentage_spent }}%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                    <span>₹0.00</span>
+                    <span>Budget: ₹{{ "%.2f"|format(monthly_budget) }}</span>
+                </div>
+            </section>
+        {% endif %}
+
+        <!-- Set / Update Budget Form Card -->
+        <section class="form-card" style="margin-top: 0;">
+            <div class="page-title" style="margin-bottom: 1.25rem; text-align: center;">
+                <h2>Set Monthly Budget</h2>
+                <p>Define your maximum spending allowance for {{ current_month_name }}</p>
+            </div>
+
+            <form action="{{ url_for('budget') }}" method="POST">
+                <div class="form-group">
+                    <label for="budget_amount">Monthly Budget Amount (₹) *</label>
+                    <input 
+                        type="number" 
+                        id="budget_amount" 
+                        name="budget_amount" 
+                        class="form-control" 
+                        placeholder="e.g., 5000.00" 
+                        step="0.01" 
+                        min="0" 
+                        value="{% if monthly_budget > 0 %}{{ "%.2f"|format(monthly_budget) }}{% endif %}" 
+                        required 
+                        autofocus
+                    >
+                    <div class="form-help">Enter the maximum amount in Indian Rupees you plan to spend this month.</div>
+                </div>
+
+                <div class="form-actions" style="justify-content: center;">
+                    <button type="submit" class="btn btn-primary" style="min-width: 200px;">Save Monthly Budget</button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Student Expense Tracker and Budget Management System | BTech IT Minor Project</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,561 @@
+/* ===================================================================
+   Student Expense Tracker and Budget Management System
+   Theme: Clean, Modern Blue & White Palette (College Project Standard)
+   =================================================================== */
+
+/* CSS Variables for Consistent Branding */
+:root {
+    --primary-blue: #1976d2;        /* Main brand blue */
+    --primary-dark: #0d47a1;        /* Dark blue for hover & headers */
+    --primary-light: #e3f2fd;       /* Soft blue tint for highlights */
+    --accent-blue: #2196f3;         /* Vibrant blue for active badges */
+    
+    --bg-light: #f4f7fb;            /* Light greyish-blue background */
+    --card-bg: #ffffff;             /* Crisp white card background */
+    
+    --text-primary: #1f2937;        /* High-contrast readable body text */
+    --text-secondary: #64748b;      /* Muted text for subtitles and captions */
+    --border-color: #e2e8f0;        /* Subtle border dividers */
+    
+    --success-green: #10b981;       /* Positive budget / success */
+    --success-bg: #ecfdf5;
+    --danger-red: #ef4444;          /* Exceeded budget / delete / errors */
+    --danger-bg: #fef2f2;
+    --warning-yellow: #f59e0b;      /* Alerts */
+    --warning-bg: #fffbeb;
+    
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(25, 118, 210, 0.08);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+}
+
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===================================================================
+   Navigation Bar
+   =================================================================== */
+.navbar {
+    background-color: #ffffff;
+    border-bottom: 2px solid var(--primary-light);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    text-decoration: none;
+}
+
+.brand-icon {
+    background-color: var(--primary-blue);
+    color: #ffffff;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 1.25rem;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease-in-out;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--primary-blue);
+    background-color: var(--primary-light);
+}
+
+/* ===================================================================
+   Main Content Layout
+   =================================================================== */
+.main-content {
+    max-width: 1100px;
+    width: 100%;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+    flex: 1;
+}
+
+/* Flash Messages */
+.alert-container {
+    margin-bottom: 1.5rem;
+}
+
+.alert {
+    padding: 0.9rem 1.2rem;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.alert-success {
+    background-color: var(--success-bg);
+    color: var(--success-green);
+    border: 1px solid #a7f3d0;
+}
+
+.alert-error {
+    background-color: var(--danger-bg);
+    color: var(--danger-red);
+    border: 1px solid #fecaca;
+}
+
+/* Top Section Header with Title & Action Button */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.page-title h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.page-title p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 0.2rem;
+}
+
+/* ===================================================================
+   Dashboard Stats Cards
+   =================================================================== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background-color: var(--card-bg);
+    padding: 1.4rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+}
+
+.stat-badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.badge-info {
+    background-color: var(--primary-light);
+    color: var(--primary-blue);
+}
+
+.badge-success {
+    background-color: var(--success-bg);
+    color: var(--success-green);
+}
+
+.badge-danger {
+    background-color: var(--danger-bg);
+    color: var(--danger-red);
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
+.stat-subtext {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.35rem;
+}
+
+/* Exceeded Budget Card Styling */
+.stat-card.danger {
+    border-color: #fca5a5;
+    background-color: #fffaf9;
+}
+
+.stat-card.danger .stat-value {
+    color: var(--danger-red);
+}
+
+/* Warning Banner */
+.warning-banner {
+    background-color: var(--danger-bg);
+    border-left: 4px solid var(--danger-red);
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1.75rem;
+    color: #991b1b;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+}
+
+/* ===================================================================
+   Budget Progress Bar
+   =================================================================== */
+.progress-container {
+    width: 100%;
+    background-color: #e5e7eb;
+    border-radius: 10px;
+    height: 10px;
+    margin-top: 0.75rem;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--primary-blue);
+    border-radius: 10px;
+    transition: width 0.4s ease;
+}
+
+.progress-bar.danger {
+    background-color: var(--danger-red);
+}
+
+/* ===================================================================
+   Tables
+   =================================================================== */
+.card-table-wrapper {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.table-header-bar {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-header-bar h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.responsive-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.responsive-table th {
+    background-color: #f8fafc;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.responsive-table td {
+    padding: 1rem 1.25rem;
+    font-size: 0.92rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.responsive-table tbody tr:hover {
+    background-color: #f9fbfe;
+}
+
+.responsive-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Category Badges */
+.category-pill {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border-radius: 50px;
+}
+
+.cat-food { background-color: #fef3c7; color: #b45309; }
+.cat-travel { background-color: #e0f2fe; color: #0369a1; }
+.cat-shopping { background-color: #f3e8ff; color: #7e22ce; }
+.cat-education { background-color: #dbeafe; color: #1d4ed8; }
+.cat-entertainment { background-color: #fce7f3; color: #be185d; }
+.cat-healthcare { background-color: #dcfce7; color: #15803d; }
+.cat-other { background-color: #f1f5f9; color: #475569; }
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3.5rem 1.5rem;
+    color: var(--text-secondary);
+}
+
+.empty-state p {
+    margin-top: 0.5rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.95rem;
+}
+
+/* ===================================================================
+   Buttons
+   =================================================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-blue);
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.btn-outline:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.btn-danger {
+    background-color: var(--danger-red);
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+/* Table Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-sm {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.8rem;
+    border-radius: 4px;
+}
+
+.btn-edit {
+    background-color: var(--primary-light);
+    color: var(--primary-blue);
+}
+
+.btn-edit:hover {
+    background-color: #bbdefb;
+}
+
+.btn-delete {
+    background-color: var(--danger-bg);
+    color: var(--danger-red);
+}
+
+.btn-delete:hover {
+    background-color: #fecaca;
+}
+
+/* ===================================================================
+   Forms
+   =================================================================== */
+.form-card {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    max-width: 550px;
+    margin: 1.5rem auto;
+    padding: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.35rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.95rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background-color: #ffffff;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.15);
+}
+
+.form-help {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-top: 0.3rem;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+}
+
+/* ===================================================================
+   Footer
+   =================================================================== */
+.footer {
+    background-color: #ffffff;
+    border-top: 1px solid var(--border-color);
+    padding: 1.25rem 1.5rem;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-top: auto;
+}
+
+/* ===================================================================
+   Responsive Mobile Adjustments
+   =================================================================== */
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .nav-links {
+        gap: 0.5rem;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .card-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .responsive-table th, 
+    .responsive-table td {
+        padding: 0.75rem;
+    }
+}

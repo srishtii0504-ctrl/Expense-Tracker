@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Expense - Student Expense Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="brand-logo">
+                <span class="brand-icon">₹</span>
+                <span>Student Expense Tracker</span>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('index') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('add_expense') }}" class="active">+ Add Expense</a></li>
+                    <li><a href="{{ url_for('budget') }}">Monthly Budget</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Flash Messages for Errors / Validation Alerts -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert-container" style="max-width: 550px; margin: 0 auto 1.5rem auto;">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Add Expense Form Card -->
+        <section class="form-card">
+            <div class="page-title" style="margin-bottom: 1.5rem; text-align: center;">
+                <h1>Record New Expense</h1>
+                <p>Log a daily expenditure to keep your budget accurate</p>
+            </div>
+
+            <form action="{{ url_for('add_expense') }}" method="POST">
+                <!-- Field 1: Expense Title -->
+                <div class="form-group">
+                    <label for="title">Expense Name / Title *</label>
+                    <input 
+                        type="text" 
+                        id="title" 
+                        name="title" 
+                        class="form-control" 
+                        placeholder="e.g., College Canteen Lunch, Semester Textbook" 
+                        required 
+                        autofocus
+                    >
+                    <div class="form-help">Enter a short, descriptive name for what you spent on.</div>
+                </div>
+
+                <!-- Field 2: Amount in INR -->
+                <div class="form-group">
+                    <label for="amount">Amount in Indian Rupees (₹) *</label>
+                    <input 
+                        type="number" 
+                        id="amount" 
+                        name="amount" 
+                        class="form-control" 
+                        placeholder="e.g., 250.00" 
+                        step="0.01" 
+                        min="0.01" 
+                        required
+                    >
+                    <div class="form-help">Specify the exact price in ₹. Must be greater than 0.</div>
+                </div>
+
+                <!-- Field 3: Category Selection -->
+                <div class="form-group">
+                    <label for="category">Category *</label>
+                    <select id="category" name="category" class="form-control" required>
+                        <option value="" disabled selected>-- Select an Expense Category --</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat }}">{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-help">Select the category that best matches this expenditure.</div>
+                </div>
+
+                <!-- Field 4: Expense Date -->
+                <div class="form-group">
+                    <label for="date">Date of Expense *</label>
+                    <input 
+                        type="date" 
+                        id="date" 
+                        name="date" 
+                        class="form-control" 
+                        value="{{ today_date }}" 
+                        required
+                    >
+                    <div class="form-help">Defaults to today's date. Adjust if recording a past expense.</div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <a href="{{ url_for('index') }}" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Expense</button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Student Expense Tracker and Budget Management System | BTech IT Minor Project</p>
+    </footer>
+
+</body>
+</html>
